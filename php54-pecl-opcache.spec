@@ -12,8 +12,8 @@ Summary:        PECL package for Zend OPcache
 
 License:        BSD
 Group:          Development/Languages
-URL:            http://pecl.php.net/package/opcache
-Source0:        http://pecl.php.net/get/opcache-%{version}.tgz
+URL:            http://pecl.php.net/package/zendopcache
+Source0:        http://pecl.php.net/get/zendopcache-%{version}.tgz
 Source1:        opcache.ini
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -39,20 +39,20 @@ bytecode optimization patterns that make code execution faster.
 
 
 %prep
-%setup -qcn %{pecl_name}-%{version}
+%setup -qcn zendopcache-%{version}
 [ -f package2.xml ] || mv package.xml package2.xml
 mv package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
-cd %{pecl_name}-%{version}
+cd zendopcache-%{version}
 
 
 %build
-cd %{pecl_name}-%{version}
+cd zendopcache-%{version}
 phpize
 %configure --enable-opcache
 CFLAGS="$RPM_OPT_FLAGS" make
 
 %install
-cd %{pecl_name}-%{version}
+cd zendopcache-%{version}
 rm -rf $RPM_BUILD_ROOT
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc %{pecl_name}-%{version}/docs/*
+%doc zendopcache-%{version}/docs/*
 %config(noreplace) %{_sysconfdir}/php.d/%{pecl_name}.ini
 %{php_extdir}/%{pecl_name}.so
 %{pecl_xmldir}/%{pecl_name}.xml
