@@ -3,9 +3,9 @@
 %{!?php_extdir: %{expand: %%global php_extdir %(php-config --extension-dir)}}
 
 %define basepkg   php54w
-%define pecl_name opcache
+%define pecl_name zendopcache
 
-Name:           %{basepkg}-pecl-opcache
+Name:           %{basepkg}-pecl-zendopcache
 Version:        7.0.1
 Release:        1%{?dist}
 Summary:        PECL package for Zend OPcache
@@ -39,26 +39,26 @@ bytecode optimization patterns that make code execution faster.
 
 
 %prep
-%setup -qcn zendopcache-%{version}
+%setup -qcn %{pecl_name}-%{version}
 [ -f package2.xml ] || mv package.xml package2.xml
 mv package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
-cd zendopcache-%{version}
+cd %{pecl_name}-%{version}
 
 
 %build
-cd zendopcache-%{version}
+cd %{pecl_name}-%{version}
 phpize
 %configure --enable-opcache
 CFLAGS="$RPM_OPT_FLAGS" make
 
 %install
-cd zendopcache-%{version}
+cd %{pecl_name}-%{version}
 rm -rf $RPM_BUILD_ROOT
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
 # install config file
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php.d
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/php.d/%{pecl_name}.ini
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
 
 # install doc files
 install -d docs
@@ -89,9 +89,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc zendopcache-%{version}/docs/*
-%config(noreplace) %{_sysconfdir}/php.d/%{pecl_name}.ini
-%{php_extdir}/%{pecl_name}.so
+%doc %{pecl_name}-%{version}/docs/*
+%config(noreplace) %{_sysconfdir}/php.d/opcache.ini
+%{php_extdir}/opcache.so
 %{pecl_xmldir}/%{pecl_name}.xml
 
 
