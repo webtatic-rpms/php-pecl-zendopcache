@@ -58,7 +58,8 @@ make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
 # install config file
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php.d
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
+echo "zend_extension=%{php_extdir}/opcache.so" > $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
+cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
 
 # install doc files
 install -d docs
@@ -90,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc %{pecl_name}-%{version}/docs/*
-%config(noreplace) %{_sysconfdir}/php.d/opcache.ini
+%config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.d/opcache.ini
 %{php_extdir}/opcache.so
 %{pecl_xmldir}/%{pecl_name}.xml
 
