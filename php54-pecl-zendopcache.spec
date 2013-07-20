@@ -131,5 +131,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 20 2013 Andy Thompson <andy@webtatic.com> 7.0.2-1
+- Update to Opcache 7.0.2
+- Add ZTS extension compilation
+
 * Sat May 18 2013 Andy Thompson <andy@webtatic.com> 7.0.1-1
 - create spec for OPcache 7.0.1
