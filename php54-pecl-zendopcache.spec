@@ -1,6 +1,8 @@
 %global php_apiver  %((echo 0; php -i 2>/dev/null | sed -n 's/^PHP API => //p') | tail -1)
 %{!?__pecl:     %{expand: %%global __pecl     %{_bindir}/pecl}}
-%{!?php_extdir: %{expand: %%global php_extdir %(php-config --extension-dir)}}
+
+# Build ZTS extension or only NTS
+%global with_zts      1
 
 %define basepkg   php54w
 %define pecl_name zendopcache
@@ -39,31 +41,58 @@ bytecode optimization patterns that make code execution faster.
 
 
 %prep
-%setup -qcn %{pecl_name}-%{version}
+%setup -qc
 [ -f package2.xml ] || mv package.xml package2.xml
-mv package2.xml %{pecl_name}-%{version}/%{pecl_name}.xml
-cd %{pecl_name}-%{version}
+mv package2.xml %{pecl_name}.xml
+
+%if %{with_zts}
+cp -r %{pecl_name}-%{version} %{pecl_name}-%{version}-zts
+%endif
 
 
 %build
-cd %{pecl_name}-%{version}
+
+pushd %{pecl_name}-%{version}
 phpize
-%configure --enable-opcache
+%configure --enable-opcache --with-php-config=%{_bindir}/php-config
 CFLAGS="$RPM_OPT_FLAGS" make
+popd
+
+%if %{with_zts}
+pushd %{pecl_name}-%{version}-zts
+phpize
+%configure --enable-opcache --with-php-config=%{_bindir}/zts-php-config
+CFLAGS="$RPM_OPT_FLAGS" make
+popd
+%endif
 
 %install
-cd %{pecl_name}-%{version}
 rm -rf $RPM_BUILD_ROOT
+
+pushd %{pecl_name}-%{version}
+
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
 # install config file
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/php.d
-echo "zend_extension=%{php_extdir}/opcache.so" > $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
-cat %{SOURCE1} >> $RPM_BUILD_ROOT%{_sysconfdir}/php.d/opcache.ini
+install -d $RPM_BUILD_ROOT%{php_inidir}
+echo "zend_extension=%{php_extdir}/opcache.so" > $RPM_BUILD_ROOT%{php_inidir}/opcache.ini
+cat %{SOURCE1} >> $RPM_BUILD_ROOT%{php_inidir}/opcache.ini
 
-# install doc files
-install -d docs
-install -pm 644 LICENSE README docs
+popd
+
+%if %{with_zts}
+pushd %{pecl_name}-%{version}-zts
+
+make install INSTALL_ROOT=$RPM_BUILD_ROOT
+
+# install config file
+install -d $RPM_BUILD_ROOT%{php_ztsinidir}
+echo "zend_extension=%{php_ztsextdir}/opcache.so" > $RPM_BUILD_ROOT%{php_ztsinidir}/opcache.ini
+cat %{SOURCE1} >> $RPM_BUILD_ROOT%{php_ztsinidir}/opcache.ini
+
+popd
+%endif
+
 
 # Install XML package description
 install -d $RPM_BUILD_ROOT%{pecl_xmldir}
@@ -90,10 +119,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc %{pecl_name}-%{version}/docs/*
-%config(noreplace) %attr(644,root,root) %{_sysconfdir}/php.d/opcache.ini
+%doc %{pecl_name}-%{version}/{LICENSE,README}
+%config(noreplace) %attr(644,root,root) %{php_inidir}/opcache.ini
 %{php_extdir}/opcache.so
 %{pecl_xmldir}/%{pecl_name}.xml
+
+%if %{with_zts}
+%config(noreplace) %attr(644,root,root) %{php_ztsinidir}/opcache.ini
+%{php_ztsextdir}/opcache.so
+%endif
 
 
 %changelog
