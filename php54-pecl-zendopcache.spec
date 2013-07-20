@@ -6,7 +6,7 @@
 %define pecl_name zendopcache
 
 Name:           %{basepkg}-pecl-zendopcache
-Version:        7.0.1
+Version:        7.0.2
 Release:        1%{?dist}
 Summary:        PECL package for Zend OPcache
 
