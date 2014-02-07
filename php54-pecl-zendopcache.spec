@@ -8,7 +8,7 @@
 %define pecl_name zendopcache
 
 Name:           %{basepkg}-pecl-zendopcache
-Version:        7.0.2
+Version:        7.0.3
 Release:        1%{?dist}
 Summary:        PECL package for Zend OPcache
 
@@ -131,6 +131,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 07 2014 Andy Thompson <andy@webtatic.com> 7.0.3-1
+- Update to Opcache 7.0.3
+
 * Sat Jul 20 2013 Andy Thompson <andy@webtatic.com> 7.0.2-1
 - Update to Opcache 7.0.2
 - Add ZTS extension compilation
