@@ -9,7 +9,7 @@
 
 Name:           %{basepkg}-pecl-zendopcache
 Version:        7.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        PECL package for Zend OPcache
 
 License:        BSD
@@ -30,6 +30,12 @@ Requires:       php(zend-abi) = %{php_zend_api}
 Requires:       php(api) = %{php_core_api}
 %else
 Requires:       php-api = %{php_apiver}
+%endif
+
+%if 0%{?fedora} < 20 && 0%{?rhel} < 7
+# Filter private shared
+%{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
+%{?filter_setup}
 %endif
 
 %description
@@ -131,6 +137,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 13 2014 Andy Thompson <andy@webtatic.com> 7.0.3-2
+- Filter .so provides < EL7
+
 * Fri Feb 07 2014 Andy Thompson <andy@webtatic.com> 7.0.3-1
 - Update to Opcache 7.0.3
 
