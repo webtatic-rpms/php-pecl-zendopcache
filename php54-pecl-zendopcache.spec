@@ -6,8 +6,8 @@
 %global with_zts  0%{?__ztsphp:1}
 
 Name:           %{basepkg}-pecl-zendopcache
-Version:        7.0.3
-Release:        2%{?dist}
+Version:        7.0.5
+Release:        1%{?dist}
 Summary:        PECL package for Zend OPcache
 
 License:        BSD
@@ -135,6 +135,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 18 2015 Andy Thompson <andy@webtatic.com> 7.0.5-1
+- Update to 7.0.5
+
 * Sat Sep 13 2014 Andy Thompson <andy@webtatic.com> 7.0.3-2
 - Filter .so provides < EL7
 
